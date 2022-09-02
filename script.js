@@ -5,30 +5,35 @@ const twtBtn = document.getElementById("twitter");
 const newQBtn = document.getElementById("new-quote");
 const loader = document.getElementById("loader");
 
-let apiQuotes = [];
+const newQuote = (apiQuotes) => {
+  if (apiQuotes.quoteText === 0) {
+    loading();
+  } else {
+    // const q = apiQuotes[Math.floor(Math.random() * apiQuotes.length)];
+    authorText.textContent = apiQuotes.quoteAuthor
+      ? apiQuotes.quoteAuthor
+      : "Unknown";
 
-const newQuote = () => {
-  loading();
-  const q = apiQuotes[Math.floor(Math.random() * apiQuotes.length)];
-  authorText.textContent = q.author ? q.author : "Unknown";
+    apiQuotes.quoteText.length > 50
+      ? quoteText.classList.add("long-quote")
+      : quoteText.classList.remove("long-quote");
 
-  q.text.length > 50
-    ? quoteText.classList.add("long-quote")
-    : quoteText.classList.remove("long-quote");
-
-  quoteText.textContent = q.text;
-  complete();
+    quoteText.textContent = apiQuotes.quoteText;
+    complete();
+  }
 };
 
 async function getQuotes() {
   loading();
-  const API_URL = "https://type.fit/api/quotes";
+  const proxyUrl = "https://protected-caverns-63094.herokuapp.com/";
+  const API_URL =
+    "http://api.forismatic.com/api/1.0/?method=getQuote&format=xml&lang=en&format=json";
 
   try {
-    const res = await fetch(API_URL);
+    const res = await fetch(proxyUrl + API_URL);
 
     apiQuotes = await res.json();
-    newQuote();
+    newQuote(apiQuotes);
   } catch (err) {
     // alert(err);
   }
